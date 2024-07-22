@@ -1,0 +1,1 @@
+usermod -aG %OWNER%__%REPO_NAME% %USERNAME%
