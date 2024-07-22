@@ -1,1 +1,4 @@
 ignore*
+*/obj/*
+*/bin/*
+*/.vs/*
