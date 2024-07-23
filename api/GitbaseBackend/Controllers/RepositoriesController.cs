@@ -28,8 +28,23 @@ namespace GitbaseBackend.Controllers {
         }
 
         [HttpGet("list")]
-        public IActionResult GetList([FromQuery] int offset, [FromQuery] int count) {
-            var entries = db.Repositories.Skip(offset).Take(count);
+        public IActionResult GetList([FromQuery] int offset, [FromQuery] int count = 100) {
+            var entries = db.Repositories
+                .OrderBy(x => x.Id)
+                .Skip(offset)
+                .Take(count);
+
+            return Ok(entries);
+        }
+
+        [HttpGet("owned_by_user/{userId}")]
+        public IActionResult GetListByUser([FromRoute] int userId, [FromQuery] bool showPrivate = false) {
+            var entries = db.Repositories
+                .Where(x =>
+                        x.OwnerId == userId
+                    && (showPrivate || !x.IsPrivate)
+                );
+
             return Ok(entries);
         }
 
@@ -59,7 +74,7 @@ namespace GitbaseBackend.Controllers {
             db.Repositories.Add(repository);
             db.SaveChanges();
 
-            pipelinesHandler.CreateRepository(repository.Name, owner.Username);
+            pipelinesHandler.CreateRepository(repository.Name, owner.Username, true);
 
             return Ok(repository);
         }
@@ -72,6 +87,8 @@ namespace GitbaseBackend.Controllers {
                 return NotFound(REPOSITORY_NOT_FOUND);
             }
 
+            var previousName = repository.Name;
+
             var owner = db.Users.FirstOrDefault(x => x.Id == repository.OwnerId);
             if(owner == null) {
                 return NotFound(OWNER_NOT_FOUND);
@@ -81,6 +98,8 @@ namespace GitbaseBackend.Controllers {
 
             db.Repositories.Update(repository);
             db.SaveChanges();
+
+            pipelinesHandler.RenameRepository(previousName, newName, owner.Username);
 
             return Ok(repository);
         }

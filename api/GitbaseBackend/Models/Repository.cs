@@ -11,6 +11,8 @@ namespace GitbaseBackend.Models {
         public User? Owner   { get; set; }
         public int   OwnerId { get; set; }
 
+        public bool  IsPrivate { get; set; }
+
         public List<User> Collaborators { get; set; } = new List<User>();
     }
 }

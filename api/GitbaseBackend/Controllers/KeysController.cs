@@ -26,6 +26,12 @@ namespace GitbaseBackend.Controllers {
             pipelinesHandler = new Pipelines(config);
         }
 
+        [HttpGet("list/{userId}")]
+        public IActionResult GetList([FromRoute] int userId) {
+            var keys = db.SshKeys.Where(x => x.UserId == userId);
+            return Ok(keys);
+        }
+
         [HttpPost("add_key/{userId}")]
         public IActionResult AddKey(SshKey key, int userId) {
             var user = db.Users.Include(x => x.SshKeys).FirstOrDefault(x => x.Id == userId);
@@ -37,8 +43,6 @@ namespace GitbaseBackend.Controllers {
 
             db.SshKeys.Add(key);
             db.SaveChanges();
-
-            user.SshKeys.Add(key);
 
             pipelinesHandler.UpdateAuthorizedKeys(user.Username, user.SshKeys);
 

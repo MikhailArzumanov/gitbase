@@ -47,8 +47,11 @@ namespace GitbaseBackend.Controllers {
         }
 
         [HttpGet("list")]
-        public IActionResult GetList([FromQuery] int offset, [FromQuery] int count) {
-            var entries = db.Users.Skip(offset).Take(count);
+        public IActionResult GetList([FromQuery] int offset, [FromQuery] int count = 100) {
+            var entries = db.Users
+                .OrderBy(x => x.Id)
+                .Skip(offset)
+                .Take(count);
             return Ok(entries);
         }
 
@@ -154,6 +157,8 @@ namespace GitbaseBackend.Controllers {
 
             db.Users.Remove(entry);
             db.SaveChanges();
+
+            pipelinesHandler.RemoveUser(entry.Username);
 
             return Ok(entry);
         }

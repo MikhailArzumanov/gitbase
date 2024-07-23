@@ -74,9 +74,12 @@ namespace GitbaseBackend.Utils {
             }
         }
 
-        public void CreateRepository(string repositoryName, string ownerName) {
+        public void CreateRepository(string repositoryName, string ownerName, bool isPublic) {
             var scriptName = "createRepository";
+            var rights = isPublic ? 775 : 770;
+
             var script = scripts[scriptName];
+            script = script.Replace("%RIGHTS%", rights.ToString());
             execRepoScript(script, repositoryName, ownerName);
         }
 
