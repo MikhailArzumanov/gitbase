@@ -29,7 +29,8 @@ namespace GitbaseBackend.Migrations {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    OwnerId = table.Column<int>(type: "integer", nullable: false)
+                    OwnerId = table.Column<int>(type: "integer", nullable: false),
+                    IsPrivate = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table => {
                     table.PrimaryKey("PK_Repositories", x => x.Id);

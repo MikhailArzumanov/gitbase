@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GitbaseBackend.Migrations {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20240722101547_ModelsAddition")]
+    [Migration("20240723084726_ModelsAddition")]
     partial class ModelsAddition {
         protected override void BuildTargetModel(ModelBuilder modelBuilder) {
 #pragma warning disable 612, 618
@@ -26,6 +26,9 @@ namespace GitbaseBackend.Migrations {
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
