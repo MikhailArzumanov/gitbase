@@ -1,5 +1,5 @@
-rm -r /git/%USERNAME%
+rm -rf /git/%USERNAME%
 
 deluser %USERNAME%
 
-rm -r /home/%USERNAME%
+rm -rf /home/%USERNAME%

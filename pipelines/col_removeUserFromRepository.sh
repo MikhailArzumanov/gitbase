@@ -1,1 +1,1 @@
-usermod -aG %OWNER%__%REPO_NAME% %USERNAME%
+gpasswd --delete %USERNAME% %OWNER%__%REPO_NAME% 

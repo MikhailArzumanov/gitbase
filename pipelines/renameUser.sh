@@ -1,4 +1,4 @@
 usermod --login %USERNAME% %PREV_NAME%
 
-mv -r /home/%PREV_NAME% /home/%USERNAME%
-mv -r /git/%PREV_NAME% /git/%USERNAME%
+mv /home/%PREV_NAME% /home/%USERNAME%
+mv /git/%PREV_NAME% /git/%USERNAME%
