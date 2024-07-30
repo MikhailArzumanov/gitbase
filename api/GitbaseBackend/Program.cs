@@ -15,15 +15,14 @@ namespace GitbaseBackend {
         static string host = "http://localhost:1011";
         
         private static void HandleArgs(ref string[] args) {
-            if(args.Length > 1) {
+            if(args.Length > 0) {
                 Console.WriteLine("=====================");
-                Console.WriteLine("Address  : " + args[1]);
-                Console.WriteLine("Port     : " + args[2]);
+                Console.WriteLine("Address  : " + args[0]);
+                Console.WriteLine("Port     : " + args[1]);
                 Console.WriteLine("=====================");
             }
             else {
-                args = new string[3] { args.Length > 0 ? args[0] : "", 
-                    "localhost", "1011" };
+                args = new string[2] { "localhost", "1011" };
 
                 Console.WriteLine("=====================");
                 Console.WriteLine("For testing purposes,");
@@ -33,8 +32,8 @@ namespace GitbaseBackend {
                 Console.WriteLine("=====================");
             }
 
-            string address = args[1];
-            string port    = args[2];
+            string address = args[0];
+            string port    = args[1];
 
             host = GetHost(address, port);
         }

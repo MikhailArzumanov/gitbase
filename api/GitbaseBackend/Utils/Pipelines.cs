@@ -4,39 +4,22 @@ using System.Diagnostics;
 namespace GitbaseBackend.Utils {
     public class Pipelines {
 
-        const string basepath = "D:\\Projects\\gitbase\\pipelines\\";
-
         string systemFamily = String.Empty;
 
         public Pipelines(IConfiguration config) {
             systemFamily = config["System"];
-
-            for(int i = 0; i < scriptKeys.Length; i++) {
-                string key      = scriptKeys[i]      ;
-                string filename = scriptFileNames[i] ;
-
-                scripts[key] = File.ReadAllText(basepath+filename);
-            }
         }
 
-        Dictionary<string, string> scripts = new Dictionary<string, string>();
-        string[] scriptFileNames = new string[] {
-            "createRepository.sh", "renameRepository.sh", "removeRepository.sh",
-            "createUser.sh"      , "renameUser.sh"      , "removeUser.sh"      , "changeUserPassword.sh" ,
 
-        };
-        string[] scriptKeys = new string[] {
-            "createRepository", "renameRepository", "removeRepository",
-            "createUser"      , "renameUser"      , "removeUser"      , "changeUserPassword" ,
-
-        };
-
-        void execLinuxCommand(string command) {
-            command.Replace("\"", "\\\"");
+        void execLinuxCommand(string commandName, string args) {
+            if(systemFamily != "Linux") {
+                Console.WriteLine("Command: {0} {1}", commandName, args);
+                return;
+            }
             string result = "";
             using (Process proc = new Process()) {
-                proc.StartInfo.FileName = "/bin/bash";
-                proc.StartInfo.Arguments = "-c \" " + command + " \"";
+                proc.StartInfo.FileName = "/bin/"+commandName;
+                proc.StartInfo.Arguments = args;
                 proc.StartInfo.UseShellExecute = false;
                 proc.StartInfo.RedirectStandardOutput = true;
                 proc.StartInfo.RedirectStandardError = true;
@@ -47,105 +30,202 @@ namespace GitbaseBackend.Utils {
 
                 proc.WaitForExit();
             }
-            //Console.WriteLine(result);
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("Command: {0} {1}", commandName, args);
+            Console.WriteLine("Result: {0}", result);
+            Console.WriteLine("-------------------------------");
+        }
+        void execGitInit(string dirpath) {
+            if (systemFamily != "Linux") {
+                Console.WriteLine("Git init at '{0}'", dirpath);
+                return;
+            }
+            string result = "";
+            using (Process proc = new Process()) {
+                proc.StartInfo.FileName = "/bin/git";
+                proc.StartInfo.Arguments = String.Format("init {0} --bare", dirpath);
+                proc.StartInfo.UseShellExecute = false;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.StartInfo.RedirectStandardError = true;
+                proc.Start();
+
+                result += proc.StandardOutput.ReadToEnd();
+                result += proc.StandardError.ReadToEnd();
+
+                proc.WaitForExit();
+            }
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("Git init at '{0}'", dirpath);
+            Console.WriteLine("Result: {0}", result);
+            Console.WriteLine("-------------------------------");
+        }
+        string execLinuxAndRead(string command) {
+            string response = String.Empty;
+            using(Process proc = new Process()) {
+                proc.StartInfo.FileName = "/bin/bash";
+                proc.StartInfo.Arguments = "-c \""+command+"\"";
+                proc.StartInfo.UseShellExecute = false;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.StartInfo.RedirectStandardError = true;
+                proc.Start();
+                response = proc.StandardOutput.ReadToEnd();
+                proc.WaitForExit();
+            }
+            return response;
         }
 
-        void execCommand(string command) {
-            if(systemFamily == "Windows") {
-                Console.WriteLine("Executing command: {0}", command);
+        void createUserLinux(string username, string password) {
+            var args = String.Format("-b /home -d /home/{0} -p {1} -s /bin/bash {0}", username, password);
+            execLinuxCommand("useradd", args);
+        }
+
+        void renameUserLinux(string prevname, string newname) {
+            var args = String.Format("--login {1} {0}", prevname, newname);
+            execLinuxCommand("usermod", args);
+        }
+
+        void changeUserPasswordLinux(string username, string password) {
+            if (systemFamily != "Linux") {
+                Console.WriteLine("Password changing.");
             }
-            else if (systemFamily == "Linux") {
-                execLinuxCommand(command);
-            }
-            else {
-                Console.WriteLine("Встречено некорректное значение конфигурации. (Поле 'System') ");
-            }
+            var hashCommand = String.Format("echo {0} | openssl passwd -1 -stdin", password);
+            var hash = execLinuxAndRead(hashCommand);
+            hash = hash.TrimEnd();
+
+            hash = hash.Replace("\"", "\\\"");
+            var argsFormat = "-c \"usermod --password '{1}' {0}\"";
+            var args = String.Format(argsFormat, username, hash);
+            execLinuxCommand("bash", args);
+        }
+
+        void removeUserLinux(string username) {
+            execLinuxCommand("deluser", username);
         }
 
 
-        void execRepoScript(string script, string repositoryName, string ownerName) {
-            
-            script = script.Replace("%USERNAME%" ,      ownerName);
-            script = script.Replace("%REPO_NAME%", repositoryName);
+        void createGroupLinux(string groupname) {
+            execLinuxCommand("groupadd", groupname);
+        }
 
-            var commands = script.Split('\n');
-            foreach (var command in commands) {
-                execCommand(command);
+        void renameGroupLinux(string prevname, string newname) {
+            var args = String.Format("-n {1} {0}", prevname, newname);
+            execLinuxCommand("groupmod", args);
+        }
+
+        void removeGroupLinux(string groupname) {
+            execLinuxCommand("groupdel", groupname);
+        }
+
+        void addUserToGroupLinux(string groupname, string username) {
+            var args = String.Format("-aG {0} {1}", groupname, username);
+            execLinuxCommand("usermod", args);
+        }
+
+        void removeUserFromGroupLinux(string groupname, string username) {
+            //..
+        }
+
+        void makeDirLinux(string dirpath) {
+            execLinuxCommand("mkdir", dirpath);
+        }
+        void changeOwnerLinux(string path, string ownerName, bool andGroup = true) {
+            var args = String.Format("{0} {1}", ownerName, path);
+            execLinuxCommand("chown", args);
+            if (andGroup) {
+                execLinuxCommand("chown", "."+args);
             }
+        }
+        void changeGroupLinux(string path, string groupname){
+            var args = String.Format("-R {0} {1}", groupname, path);
+            execLinuxCommand("chgrp", args);
+        }
+        void changeModifiersLiniux(string path, string rights) {
+            var args = String.Format("-R {1} {0}", path, rights);
+            execLinuxCommand("chmod", args);
+        }
+
+        void moveLinux(string src, string dist){
+            var args = String.Format("{0} {1}", src, dist);
+            execLinuxCommand("mv", args);
+        }
+
+        void removeByPathLinux(string path) {
+            execLinuxCommand("rm", "-rf " + path);
         }
 
         public void CreateRepository(string repositoryName, string ownerName, bool isPublic) {
-            var scriptName = "createRepository";
-            var rights = isPublic ? 775 : 770;
-
-            var script = scripts[scriptName];
-            script = script.Replace("%RIGHTS%", rights.ToString());
-            execRepoScript(script, repositoryName, ownerName);
+            var groupname = String.Format("{0}__{1}", ownerName, repositoryName);
+            var dirpath = String.Format("/git/{0}/{1}", ownerName, repositoryName);
+            createGroupLinux(groupname);
+            addUserToGroupLinux(groupname, ownerName);
+            makeDirLinux(dirpath);
+            execGitInit(dirpath);
+            changeModifiersLiniux(dirpath, isPublic ? "775" : "770");
+            changeOwnerLinux(dirpath, ownerName, false);
+            changeGroupLinux(dirpath, groupname);
         }
 
         public void RenameRepository(string repositoryOldName, string repositoryNewName, string ownerName) {
-            var scriptName = "renameRepository";
-            var script = scripts[scriptName];
-            script = script.Replace("%PREV_NAME%", repositoryOldName);
-            execRepoScript(script, repositoryNewName, ownerName);
+            string repoDirFormat = "/git/{0}/{1}",
+                   prevRepoDir   = String.Format(repoDirFormat, ownerName, repositoryOldName),
+                   newRepoDir    = String.Format(repoDirFormat, ownerName, repositoryNewName);
+            
+            string groupFromat = "{0}__{1}",
+                   prevGroup   = String.Format(groupFromat, ownerName, repositoryOldName),
+                   newGroup    = String.Format(groupFromat, ownerName, repositoryNewName);
+            
+            renameGroupLinux(prevGroup, newGroup);
+            moveLinux(prevRepoDir, newRepoDir);
         }
 
         public void RemoveRepository(string repositoryName, string ownerName) {
-            var scriptName = "removeRepository";
-            var script = scripts[scriptName];
-            execRepoScript(script, repositoryName, ownerName);
+            var dirpath = String.Format("/git/{0}/{1}", ownerName, repositoryName);
+            var groupname = String.Format("{0}__{1}", ownerName, repositoryName);
+
+            removeGroupLinux(groupname);
+            removeByPathLinux(dirpath);
         }
 
 
         public void CreateUser(string username, string password) {
-            var scriptName = "createUser";
-            var script = scripts[scriptName];
+            var homedir = String.Format("/home/{0}", username);
+            makeDirLinux(homedir);
+            makeDirLinux(homedir+"/.ssh");
 
-            script = script.Replace("%USERNAME%", username);
-            script = script.Replace("%PASSWORD%", password);
-            
-            var commands = script.Split('\n');
-            foreach (var command in commands) {
-                execCommand(command);
-            }
+            createUserLinux(username, password);
+            changeUserPasswordLinux(username, password);
+
+            changeOwnerLinux(homedir, username);
+
+            var gitdir = String.Format("/git/{0}", username);
+            makeDirLinux(gitdir);
+            changeOwnerLinux(gitdir, username);
         }
 
         public void RenameUser(string oldUsername, string newUsername) {
-            var scriptName = "renameUser";
-            var script = scripts[scriptName];
+            renameUserLinux(oldUsername, newUsername);
 
-            script = script.Replace("%USERNAME%" , newUsername);
-            script = script.Replace("%PREV_NAME%", oldUsername);
-            
-            var commands = script.Split('\n');
-            foreach (var command in commands) {
-                execCommand(command);
-            }
+            string homedirFormat = "/home/{0}",
+                   prevHomedir   = String.Format(homedirFormat, oldUsername),
+                   newHomedir    = String.Format(homedirFormat, newUsername);
+            moveLinux(prevHomedir, newHomedir);
+
+            string gitdirFormat = "/git/{0}",
+                   prevGitdir   = String.Format(gitdirFormat, oldUsername),
+                   newGitdir    = String.Format(gitdirFormat, newUsername);
+            moveLinux(prevGitdir, newGitdir);
         }
 
         public void RemoveUser(string username) {
-            var scriptName = "renameUser";
-            var script = scripts[scriptName];
-
-            script = script.Replace("%USERNAME%" , username);
-            
-            var commands = script.Split('\n');
-            foreach (var command in commands) {
-                execCommand(command);
-            }
+            var homedir = String.Format("/home/{0}", username);
+            var gitdir  = String.Format("/git/{0}" , username);
+            removeUserLinux(username);
+            removeByPathLinux(homedir);
+            removeByPathLinux(gitdir);
         }
 
         public void ChangeUserPassword(string username, string newPassword) {
-            var scriptName = "changeUserPassword";
-            var script = scripts[scriptName];
-
-            script = script.Replace("%USERNAME%" , username);
-            script = script.Replace("%PASSWORD%" , newPassword);
-
-            var commands = script.Split('\n');
-            foreach (var command in commands) {
-                execCommand(command);
-            }
+            changeUserPasswordLinux(username, newPassword);
         }
 
         public void UpdateAuthorizedKeys(string username, ICollection<SshKey> keys) {
