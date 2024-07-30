@@ -17,7 +17,6 @@ namespace GitbaseBackend.Controllers {
 
         private Pipelines pipelinesHandler;
 
-        const string PREVIOUS_PASSWORD_DOESNT_MATCHES = "Previous password doesn't matches.";
 
         public UsersController(ApplicationContext context, IConfiguration config) {
             db = context;
@@ -25,7 +24,7 @@ namespace GitbaseBackend.Controllers {
             pipelinesHandler = new Pipelines(config);
         }
 
-        [HttpPost("auth")]
+        [HttpPost(Routes.Users.AUTHORIZATION)]
         public IActionResult Login([FromBody] AuthData authData) {
             var validationResponse = Validator.Validate(authData);
             if(validationResponse != String.Empty) {
@@ -46,7 +45,7 @@ namespace GitbaseBackend.Controllers {
             return Ok(new { Self = token});
         }
 
-        [HttpGet("list")]
+        [HttpGet(Routes.Users.GET_LIST)]
         public IActionResult GetList([FromQuery] int offset, [FromQuery] int count = 100) {
             var entries = db.Users
                 .OrderBy(x => x.Id)
@@ -55,7 +54,7 @@ namespace GitbaseBackend.Controllers {
             return Ok(entries);
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet(Routes.Users.GET_CONCRETE)]
         public IActionResult GetConcrete([FromRoute] int id) {
             var entry = db.Users
                 .Include(x => x.OwnedRepositories)
@@ -68,12 +67,22 @@ namespace GitbaseBackend.Controllers {
             return Ok(entry);
         }
 
+        [HttpGet(Routes.Users.GET_FULL_DATA)]
+        public IActionResult GetFullData([FromRoute] int id) {
+            return Responses.NOT_IMPLEMENTED;
+        }
 
-        [HttpPost("create")]
+
+        [HttpPost(Routes.Users.CREATE_USER)]
         public IActionResult CreateUser([FromBody] User user) {
             var validationResult = Validator.Validate(user);
             if(validationResult != String.Empty) {
                 return BadRequest(validationResult);
+            }
+
+            var intersectionMessage = Intersections.GetIntersectionMessage(db, config, user);
+            if(intersectionMessage != String.Empty) {
+                return BadRequest(intersectionMessage);
             }
 
             var plainPassword = user.Password;
@@ -88,11 +97,16 @@ namespace GitbaseBackend.Controllers {
             return Ok(user);
         }
 
-        [HttpPut("redact_info/{id}")]
+        [HttpPut(Routes.Users.REDACT_INFO)]
         public IActionResult RedactUserInfo([FromBody] User data, [FromRoute] int id) {
             var entry = db.Users.FirstOrDefault(x => x.Id == id);
             if(entry == null) {
                 return NotFound(Shared.USER_NOT_FOUND);
+            }
+
+            var validationResult = Validator.Validate(data);
+            if(validationResult != String.Empty) {
+                return BadRequest(validationResult);
             }
 
             entry.Email   = data.Email   ;
@@ -106,7 +120,7 @@ namespace GitbaseBackend.Controllers {
             return Ok(entry);
         }
 
-        [HttpPut("change_password/{id}")]
+        [HttpPut(Routes.Users.CHANGE_PASSWORD)]
         public IActionResult ChangePassword([FromBody] ChangePasswordRequest request, [FromRoute] int id) {
             string prevPassword = request.PreviousPassword;
             string newPassword  = request.NewPassword     ;
@@ -116,7 +130,7 @@ namespace GitbaseBackend.Controllers {
                 return NotFound(Shared.USER_NOT_FOUND);
             }
             if(entry.Password != Hasher.Hash(prevPassword)) {
-                return BadRequest(PREVIOUS_PASSWORD_DOESNT_MATCHES);
+                return BadRequest(Shared.PREVIOUS_PASSWORD_DOESNT_MATCH);
             }
 
             entry.Password = Hasher.Hash(newPassword);
@@ -129,7 +143,7 @@ namespace GitbaseBackend.Controllers {
             return Ok(entry);
         }
 
-        [HttpPut("rename/{id}")]
+        [HttpPut(Routes.Users.RENAME_USER)]
         public IActionResult RenameUser([FromQuery] string newUsername, [FromRoute] int id) {
             var entry = db.Users.FirstOrDefault(x => x.Id == id);
             if(entry == null) {
@@ -140,6 +154,10 @@ namespace GitbaseBackend.Controllers {
 
             entry.Username = newUsername;
 
+            if(!Intersections.IsNameUnique(db, config, entry)) {
+                return BadRequest(Shared.NAME_IS_OCCUPIED);
+            }
+
             db.Users.Update(entry);
             db.SaveChanges();
 
@@ -147,8 +165,26 @@ namespace GitbaseBackend.Controllers {
 
             return Ok(entry);
         }
+        [HttpPut(Routes.Users.CHANGE_AUTHNAME)]
+        public IActionResult ChangeAuthname([FromQuery] string newAuthname, [FromRoute] int id) {
+            var entry = db.Users.FirstOrDefault(x => x.Id == id);
+            if(entry == null) {
+                return NotFound(Shared.USER_NOT_FOUND);
+            }
 
-        [HttpDelete("remove/{id}")]
+            entry.Authname = newAuthname;
+
+            if(!Intersections.IsAuthnameUnique(db, entry)) {
+                return BadRequest(Intersections.AUTHNAME_IS_OCCUPIED);
+            }
+
+            db.Users.Update(entry);
+            db.SaveChanges();
+
+            return Ok(entry);
+        }
+
+        [HttpDelete(Routes.Users.REMOVE_USER)]
         public IActionResult RemoveUser([FromRoute] int id) {
             var entry = db.Users.FirstOrDefault(x => x.Id == id);
             if(entry == null) {

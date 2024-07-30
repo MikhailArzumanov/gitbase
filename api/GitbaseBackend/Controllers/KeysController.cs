@@ -17,8 +17,6 @@ namespace GitbaseBackend.Controllers {
 
         private Pipelines pipelinesHandler;
 
-        const string KEY_NOT_FOUND = "Key was not found.";
-
         public KeysController(ApplicationContext context, IConfiguration config) {
             db = context;
             this.config = config;
@@ -26,13 +24,13 @@ namespace GitbaseBackend.Controllers {
             pipelinesHandler = new Pipelines(config);
         }
 
-        [HttpGet("list/{userId}")]
+        [HttpGet(Routes.Keys.GET_LIST)]
         public IActionResult GetList([FromRoute] int userId) {
             var keys = db.SshKeys.Where(x => x.UserId == userId);
             return Ok(keys);
         }
 
-        [HttpPost("add_key/{userId}")]
+        [HttpPost(Routes.Keys.ADD_KEY)]
         public IActionResult AddKey(SshKey key, int userId) {
             var user = db.Users.Include(x => x.SshKeys).FirstOrDefault(x => x.Id == userId);
             if (user == null) {
@@ -49,11 +47,11 @@ namespace GitbaseBackend.Controllers {
             return Ok(key);
         }
 
-        [HttpDelete("remove_key/{id}")]
+        [HttpDelete(Routes.Keys.REMOVE_KEY)]
         public IActionResult RemoveKey(int id) {
             var entry = db.SshKeys.FirstOrDefault(x => x.Id == id);
             if(entry == null) {
-                return NotFound(KEY_NOT_FOUND);
+                return NotFound(Shared.KEY_NOT_FOUND);
             }
 
             db.SshKeys.Remove(entry);
