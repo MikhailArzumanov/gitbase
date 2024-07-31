@@ -1,0 +1,39 @@
+Ubuntu:
+
+
+# Брандмауэр
+
+## Установка
+apt install ufw
+
+## Настройка
+ufw allow 22
+ufw allow 443
+ufw allow 1011
+
+
+# PostgreSQL
+
+## Установка
+apt install postgresql
+systemctl enable postgresql
+
+## Конфигурирование при необходимости
+nano /etc/postgresql/12/main/postgresql.conf
+systemctl restart postgresql
+
+## Настройка кодировки
+sudo -i -u postgres
+psql
+SET client_encoding = 'UTF8';
+show client_encoding;
+exit
+exit
+
+# .NET
+## Установка
+rm -rf $HOME/dotnet
+mkdir -p $HOME/dotnet 
+tar xf %DIST_ARCHIVE% -C $HOME/dotnet
+### Если переменная PATH не содержит пути к $HOME/dotnet
+export PATH=$PATH:$HOME/dotnet
