@@ -42,7 +42,10 @@ namespace GitbaseBackend.Controllers {
             }
 
             var token = TokensHandler.BuildToken(Shared.USER_ROLES, entry.Id, config);
-            return Ok(new { Self = token});
+            return Ok(new {
+                Token = new { Self = token },
+                User  = entry
+            });
         }
 
         [HttpGet(Routes.Users.GET_LIST)]
@@ -198,7 +201,6 @@ namespace GitbaseBackend.Controllers {
 
             return Ok(entry);
         }
-
         public class ChangePasswordRequest {
             public string PreviousPassword { get; set; } = String.Empty;
             public string NewPassword      { get; set; } = String.Empty;
