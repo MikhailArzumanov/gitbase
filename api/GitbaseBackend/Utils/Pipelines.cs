@@ -60,6 +60,9 @@ namespace GitbaseBackend.Utils {
             Console.WriteLine("-------------------------------");
         }
         string execLinuxAndRead(string command) {
+            if (systemFamily != "Linux") {
+                return String.Empty;
+            }
             string response = String.Empty;
             using(Process proc = new Process()) {
                 proc.StartInfo.FileName = "/bin/bash";
