@@ -1,5 +1,5 @@
 <style scoped>
-  @import url('./Admin.css');
+  @import url('./LayoutAdmin.css');
 </style>
 <script>
 
