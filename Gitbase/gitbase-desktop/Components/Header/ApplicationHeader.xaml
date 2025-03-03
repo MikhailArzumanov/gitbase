@@ -1,0 +1,29 @@
+﻿<UserControl 
+    x:Class="gitbase_desktop.Components.Header.ApplicationHeader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:gitbase_desktop.Components.Header"
+    mc:Ignorable="d" 
+    d:DesignHeight="70" 
+    d:DesignWidth="313"
+    Background="White"
+>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Image Source="../../Media/logo.png"/>
+        <TextBlock 
+            Grid.Column="1"
+            
+            FontSize="30"
+            Text="Gitbase Desktop"
+                   
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+        />
+    </Grid>
+</UserControl>
