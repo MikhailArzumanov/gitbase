@@ -18,6 +18,6 @@ cd  /app/gitbase/api
 ###  в Postgres
 
 ## В активном режиме
-dotnet GitbaseBackend.dll %IP% 1011
+dotnet Backend.dll
 ## В режиме фонового процесса
-nohup dotnet GitbaseBackend.dll > /dev/null 2>&1 &
+nohup dotnet Backend.dll > /dev/null 2>&1 &

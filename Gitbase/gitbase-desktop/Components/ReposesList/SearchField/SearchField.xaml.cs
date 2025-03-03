@@ -14,16 +14,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace gitbase_desktop.Components.ReposesList.SearchField {
-    /// <summary>
-    /// Логика взаимодействия для SearchField.xaml
-    /// </summary>
     public partial class SearchField : UserControl {
         public SearchField() {
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e) {
-
+        private void AtTextChanged(object sender, TextChangedEventArgs e) {
+            var newTextValue = TheTextBox.Text;
         }
     }
 }

@@ -89,7 +89,7 @@ namespace Backend.Pipelines.PLHandlers {
         }
 
         public void removeUser(string username) {
-            execLinuxCommand("deluser", username);
+            execLinuxCommand("userdel", username);
         }
 
 

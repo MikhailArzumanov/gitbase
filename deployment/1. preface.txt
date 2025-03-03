@@ -1,26 +1,40 @@
-Ubuntu:
 
 
 # Брандмауэр
-
-## Установка
+## Ubuntu
+### Установка
 apt install ufw
 
-## Настройка
+### Настройка
 ufw allow 22
 ufw allow 443
-ufw allow 1011
 
+## CentOS
+### Подключение серивсов
+systemctl enable firewalld
+systemctl start firewalld
+### Настрйока
+firewall-cmd --zone=public --add-port=443/tcp --permanent
 
 # PostgreSQL
 
 ## Установка
+### Ubuntu
 apt install postgresql
 systemctl enable postgresql
+### CentOS
+dnf install postgresql-server
+postgresql-setup initdb
+systemctl enable postgresql --now
 
 ## Конфигурирование при необходимости
-nano /etc/postgresql/12/main/postgresql.conf
-systemctl restart postgresql
+### Ubuntu
+- nano /etc/postgresql/12/main/postgresql.conf
+- systemctl restart postgresql
+### CentOS
+- nano /var/lib/pgsql/data/pg_hba.configuration
+- Замена ident на md5 в первых двух случаях
+- systemctl restart postgresql
 
 ## Настройка кодировки
 sudo -i -u postgres
@@ -37,3 +51,9 @@ mkdir -p $HOME/dotnet
 tar xf %DIST_ARCHIVE% -C $HOME/dotnet
 ### Если переменная PATH не содержит пути к $HOME/dotnet
 export PATH=$PATH:$HOME/dotnet
+
+# Golang
+## Установка
+rm -rf /usr/local/go
+tar -C /usr/local -xzf go1.24.0.linux-amd64.tar.gz
+ln -s /usr/local/go/bin/go /usr/bin/go

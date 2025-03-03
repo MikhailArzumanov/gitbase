@@ -11,6 +11,9 @@
     d:Background="White"
 >
     <TextBox 
+        x:Name="TheTextBox"
+        Background="White"
+        BorderBrush="Black"
         TextChanged="AtTextChanged"
     />
 </UserControl>

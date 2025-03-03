@@ -1,25 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace gitbase_desktop {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
+            var lBytes = Encoding.UTF8.GetBytes("1380");
+            var rBytes = Encoding.UTF8.GetBytes("0908");
+            var lMD5Hash = MD5.Create().ComputeHash(lBytes);
+            var rMD5Hash = MD5.Create().ComputeHash(rBytes);
+            Console.WriteLine("Пароль для пользователя Postgres: {0}{1}",
+                Convert.ToBase64String(lMD5Hash), 
+                Convert.ToBase64String(rMD5Hash)
+            );
+            var lSHA512Hash = SHA512.Create().ComputeHash(lBytes);
+            var rSHA512Hash = SHA512.Create().ComputeHash(rBytes);
+            Console.WriteLine("Ключ jwt-токенов: {0}{1}",
+                Convert.ToBase64String(lSHA512Hash),
+                Convert.ToBase64String(rSHA512Hash)
+            );
+            var SHA256Hash = SHA256.Create().ComputeHash(lBytes);
+            Console.WriteLine("Пароль администратора: {0}",
+                Convert.ToBase64String(SHA256Hash)
+            );
         }
     }
 }
