@@ -1,0 +1,21 @@
+# Установка
+
+mkdir /app
+mkdir /app/gitbase
+mkdir /app/gitbase/proxy
+
+tar xf proxy.tar.gz -C /app/gitbase/proxy
+
+# Конфигурирование
+nano /app/gitbase/backend/settings.json
+
+# Запуск
+
+cd /app/gitbase/proxy
+
+## В активном режиме
+go run main.go
+
+## В режиме фонового процесса
+go build -o proxy.bin
+nohup ./proxy.bin > /dev/null 2>&1 &

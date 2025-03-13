@@ -1,0 +1,13 @@
+{
+  "ProxyHost":"localhost:443",
+	"CertPath":	"./certs/localhost.crt",
+	"keyPath": "./certs/localhost.key",
+  "ProxyTable" : [
+    {
+      "DomainKey" : "localhost",
+      "DestScheme" : "http",
+      "DestHost" : "localhost",
+      "DestPort" : "13809"
+    }
+  ]
+}

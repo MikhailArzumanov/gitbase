@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{A43C8EAB-38BE-4288-A69E-63E9CAC63B0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gitbase-desktop", "gitbase-desktop\gitbase-desktop.csproj", "{5862098F-D56D-40B5-950C-1DB7E8374ED6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A43C8EAB-38BE-4288-A69E-63E9CAC63B0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A43C8EAB-38BE-4288-A69E-63E9CAC63B0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A43C8EAB-38BE-4288-A69E-63E9CAC63B0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A43C8EAB-38BE-4288-A69E-63E9CAC63B0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5862098F-D56D-40B5-950C-1DB7E8374ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5862098F-D56D-40B5-950C-1DB7E8374ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5862098F-D56D-40B5-950C-1DB7E8374ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5862098F-D56D-40B5-950C-1DB7E8374ED6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

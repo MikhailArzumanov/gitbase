@@ -1,0 +1,6 @@
+@Backend_HostAddress = http://localhost:1380
+
+GET {{Backend_HostAddress}}/api/users/
+Accept: application/json
+
+###

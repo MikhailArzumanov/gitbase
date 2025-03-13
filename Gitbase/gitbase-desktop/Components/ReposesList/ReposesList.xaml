@@ -1,0 +1,23 @@
+﻿<UserControl 
+    x:Class="gitbase_desktop.Components.ReposesList.ReposesList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:gitbase_desktop.Components.ReposesList"
+    xmlns:divisors="clr-namespace:gitbase_desktop.Components.Divisors"
+    mc:Ignorable="d" 
+    d:DesignHeight="339"
+    d:DesignWidth="313"
+    d:Background="White"
+>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="1" />
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <TextBox />
+        <divisors:HorizontalDivisor Grid.Row="1"/>
+    </Grid>
+</UserControl>
