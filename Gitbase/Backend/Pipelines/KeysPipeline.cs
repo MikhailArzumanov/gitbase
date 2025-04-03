@@ -6,7 +6,7 @@ namespace Backend.Pipelines {
         public void UpdateAuthorizedKeys(string username, ICollection<SshKey> keys) {
             string compilatedKeys = String.Empty;
             foreach (SshKey key in keys) {
-                compilatedKeys += key.Self;
+                compilatedKeys += key.Self+"\n";
             }
 
             var authorizedKeysFilepath = $"/home/{username}/.ssh/authorized_keys";

@@ -1,6 +1,5 @@
 using Backend.Configuring;
 using Backend.Constants;
-using Backend.Tests;
 
 namespace Backend {
     public class Program {
