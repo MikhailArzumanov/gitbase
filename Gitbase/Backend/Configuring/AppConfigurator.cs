@@ -1,4 +1,5 @@
-﻿using Backend.Data;
+﻿using Backend.Constants;
+using Backend.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +45,7 @@ namespace Backend.Configuring {
         ) {
             app.UseAuthentication();
             app.UseRouting();
-            app.UseCors();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             app.UseAuthorization();
 
             if (isDevelopmentEnv) {

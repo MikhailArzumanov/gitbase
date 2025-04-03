@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>D:\Projects\gitbase\Gitbase\Backend\bin\Release\net8.0\publish\</_PublishTargetUrl>
-    <History>True|2025-04-03T07:42:10.4313390Z||;True|2025-03-03T13:46:30.2187616+03:00||;True|2025-03-03T10:26:19.4602088+03:00||;</History>
+    <History>True|2025-04-03T08:57:14.4756314Z||;True|2025-04-03T10:42:10.4313390+03:00||;True|2025-03-03T13:46:30.2187616+03:00||;True|2025-03-03T10:26:19.4602088+03:00||;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>

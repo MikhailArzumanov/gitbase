@@ -17,7 +17,7 @@ namespace Backend.Controllers {
 
     [ApiController]
     [Route("api/[controller]")]
-    [EnableCors("CorsAllowAny")]
+    [EnableCors(Cors.APPLICATION_CORS_POLICY)]
     public partial class UsersController : ControllerBase {
 
         private ApplicationContext db;
