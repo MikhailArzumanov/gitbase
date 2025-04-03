@@ -1,27 +1,3 @@
-<style scoped>
-  #notificationBar{
-    text-align: center;
-    padding   : 12px 40px;
-
-    color         : black;
-    background    : white;
-    border        : 1px solid black;
-    border-radius : 7px;
-    
-    
-    position  : fixed;
-    z-index   : 12;
-    left      : 50vw;
-    bottom    : 20px;
-    transform : translateX(-50%);
-    
-    width: fit-content;
-
-    visibility : hidden;
-    opacity    : 0;
-    transition : opacity 0.4s;
-  }
-</style>
 <script setup lang="ts">
   import { hide } from '@/shared/fns/notification-bar.fns';
 import { InjectionKeys } from '@/shared/globals/injections.globals';
@@ -50,3 +26,28 @@ import { InjectionKeys } from '@/shared/globals/injections.globals';
   <RouterView />
   <div id="notificationBar" @click="hideBar"></div>
 </template>
+
+<style scoped>
+  #notificationBar{
+    text-align: center;
+    padding   : 12px 40px;
+
+    color         : black;
+    background    : white;
+    border        : 1px solid black;
+    border-radius : 7px;
+    
+    
+    position  : fixed;
+    z-index   : 12;
+    left      : 50vw;
+    bottom    : 20px;
+    transform : translateX(-50%);
+    
+    width: fit-content;
+
+    visibility : hidden;
+    opacity    : 0;
+    transition : opacity 0.4s;
+  }
+</style>
