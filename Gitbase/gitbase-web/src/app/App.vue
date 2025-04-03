@@ -4,6 +4,7 @@ import { InjectionKeys } from '@/shared/globals/injections.globals';
   import { HttpClient } from '@/shared/modules/http/http';
   import { ErrorsService } from '@/shared/services/common-services/errors.service';
   import { StorageService } from '@/shared/services/common-services/storage.service';
+import { RepositoriesService } from '@/shared/services/repositories.service';
   import { UsersService } from '@/shared/services/users.service';
   import { provide } from 'vue';
 
@@ -13,10 +14,12 @@ import { InjectionKeys } from '@/shared/globals/injections.globals';
   let httpClient = new HttpClient(errorsService);
 
   let usersService = new UsersService(httpClient);
+  let repositoriesService = new RepositoriesService(httpClient);
 
-  provide(InjectionKeys.ERRORS ,  errorsService);
-  provide(InjectionKeys.USERS  ,   usersService);
-  provide(InjectionKeys.STORAGE, storageService);
+  provide(InjectionKeys.ERRORS  ,       errorsService);
+  provide(InjectionKeys.USERS   ,        usersService);
+  provide(InjectionKeys.STORAGE ,      storageService);
+  provide(InjectionKeys.REPOS   , repositoriesService);
 
   let hideBar = hide;
 

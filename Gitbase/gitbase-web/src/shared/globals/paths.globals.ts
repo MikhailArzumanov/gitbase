@@ -5,7 +5,8 @@ export class Paths {
 }
 
 export class PublicPaths {
-
+  public static readonly REPOSITORIES = '/repositories';
+  public static readonly REPOSITORY   = '/repository'  ;
 }
 
 export class AdminPaths {

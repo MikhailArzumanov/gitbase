@@ -8,7 +8,7 @@ export class UsersService extends AuthorizedService {
   CONTROLLER_URL  = this.SERVICE_URL+this.CONTROLLER_NAME;
 
   async auth(authname: string, password: string) : Promise<AuthResponse | null>{
-    let METHOD_NAME = 'auth';
+    let METHOD_NAME = 'auth/authorize';
     let url = `${this.CONTROLLER_URL}/${METHOD_NAME}`;
     let headers = this.getBaseHeaders();
     let params = {};
@@ -18,7 +18,7 @@ export class UsersService extends AuthorizedService {
   }
 
   async register(user: User) : Promise<User | null>{
-    let METHOD_NAME = 'create';
+    let METHOD_NAME = 'auth/register';
     let url = `${this.CONTROLLER_URL}/${METHOD_NAME}`;
     let headers = this.getBaseHeaders();
     let params = {};

@@ -1,6 +1,3 @@
-<style scoped>
-  @import url('../AuthPanel.css');
-</style>
 <script setup lang="ts">
   import { User } from '@/shared/models/user.model';
 
@@ -21,7 +18,6 @@
   })
 
 </script>
-
 <template>
   <div class="auth-grid-row">
     <p class="auth-field-title">
@@ -32,3 +28,6 @@
     />
   </div>
 </template>
+<style scoped>
+  @import url('../AuthPanel.css');
+</style>

@@ -1,6 +1,6 @@
 import type { AuthData } from "@/shared/models/auth-data.model.js";
 import {BaseService} from "./base.service.js";
-import type { Token } from "@/shared/models/token.model.js";
+import { Token } from "@/shared/models/token.model.js";
 import { JSON_CONTENT_TYPE } from "@/shared/globals/content-type.globals.js";
 import { TOKEN_STORAGE_KEY } from "@/shared/globals/storage.globals.js";
 import { TOKEN_HEADER_KEY } from "@/shared/globals/http-headers.globals.js";
@@ -15,13 +15,13 @@ export class AuthorizedService extends BaseService{
     let token   = this.getToken;
 
     let headers = this.getBaseHeaders(contentType);
-        headers[TOKEN_HEADER_KEY] `Bearer ${token}`;
+        headers[TOKEN_HEADER_KEY] = `Bearer ${token}`;
     return headers;
   }
   
   private loadToken(){
     if (!AuthorizedService.token) {
-      let tokenJSON = sessionStorage.getItem(TOKEN_STORAGE_KEY) ?? 'null';
+      let tokenJSON = localStorage.getItem(TOKEN_STORAGE_KEY) ?? 'null';
       AuthorizedService.token = JSON.parse(tokenJSON);
     }
   }
@@ -38,16 +38,17 @@ export class AuthorizedService extends BaseService{
   
   public setToken(token: Token) {
     AuthorizedService.token = token;
-    sessionStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
+    localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
   }
   
   public setTokenStr(tokenStr: string){
-    sessionStorage.setItem(TOKEN_STORAGE_KEY, tokenStr);
+    let token = new Token(tokenStr);
+    this.setToken(token);
   }
   
   public clearAuth(){
     AuthorizedService.token = undefined;
-    sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 
 }

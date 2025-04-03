@@ -8,7 +8,7 @@ export class User {
   authname : string;
   password : string;
 
-  username : string;
+  userName : string;
   email    : string;
   about    : string;
   company  : string;
@@ -25,7 +25,7 @@ export class User {
     id       : number,
     authname : string,
     password : string,
-    username : string,
+    userName : string,
     email    : string,
     about    : string,
     company  : string,
@@ -37,7 +37,7 @@ export class User {
       this.id       = id      ;
       this.authname = authname;
       this.password = password;
-      this.username = username;
+      this.userName = userName;
       this.email    = email   ;
       this.about    = about   ;
       this.company  = company ;

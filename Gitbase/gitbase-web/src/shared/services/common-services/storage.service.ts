@@ -1,4 +1,5 @@
-import { USER_STORAGE_KEY } from "@/shared/globals/storage.globals";
+import { TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from "@/shared/globals/storage.globals";
+import type { Token } from "@/shared/models/token.model";
 import type { User } from "@/shared/models/user.model";
 
 export class StorageService {

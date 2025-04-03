@@ -1,6 +1,3 @@
-<style scoped>
-  @import url('./AuthPanel.css');
-</style>
 <script setup lang="ts">
   import { getEmptyUser, User } from '@/shared/models/user.model';
   import AuthForm from './forms/AuthForm.vue';
@@ -72,7 +69,7 @@
     usersService.auth(user.authname, user.password)
     .then((resp : AuthResponse | null)=>{
       if(resp == null) {handleError(); return;}
-      usersService.setToken(resp.token);
+      usersService.setTokenStr(resp.token);
       let message = Messages.AUTHORIZATION_SUCCESS;
       completeAuthorization(resp.user, message);
     })
@@ -95,7 +92,7 @@
   }
 
   function redirect(path: string) : void {
-    instance?.proxy?.$router.push({ path: path});
+    instance?.proxy?.$router.push({path: path});
   }
 
 </script>
@@ -118,3 +115,6 @@
   </div>
 
 </template>
+<style scoped>
+  @import url('./AuthPanel.css');
+</style>
